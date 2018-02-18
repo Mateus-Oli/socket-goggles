@@ -27,12 +27,21 @@ module.exports = (server = createServer()) => (listener = (webSocket = WebSocket
 
   server.on('upgrade', connection);
 
+  /**
+   * Creates a connection listener
+   * @param {(socket: WebSocket, hash: string) => any} listener
+   */
+  const onConnect = listener => {
+    const index = listeners.push(listener) - 1;
+    return () => { listeners.splice(index, 1); };
+  };
+
   return {
     server: () => server,
     sockets: () => sockets,
     remove: () => { server.removeListener('upgrade', connection); },
     broadcast: data => sockets.forEach(socket => socket.emit(data)),
-    onConnect: (listener = (webSocket = WebSocket.prototype, hash = webSocket.hash) => { error(new Error('Provide Listener')) }) => listeners.push(listener),
+    onConnect,
     listen: server.listen.bind(server)
   };
 };

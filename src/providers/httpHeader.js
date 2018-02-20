@@ -8,9 +8,9 @@ const EOL = '\r\n';
  * @param {number} status
  */
 module.exports = status => (headers = {}) => Object
-  .entries(headers)
+  .keys(headers)
   .reduce(
-    (headers, [header, value]) => `${headers}${header}: ${value}${EOL}`,
+    (acc, header) => `${acc}${header}: ${headers[header]}${EOL}`,
     statusLine(status)
   ) + EOL;
 

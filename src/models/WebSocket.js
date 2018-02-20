@@ -1,11 +1,14 @@
 const { IncomingMessage } = require('http');
 const { Socket } = require('net');
 
+const manageListener = require('../utils/manageListener');
+
 const isClose = require('../providers/isClose');
 const getState = require('../providers/getState');
+const transferable = require('../providers/transferable');
 const getSocketKey  = require('../providers/getSocketKey');
-const manageListener = require('../utils/manageListener');
 const acceptHandshake = require('../providers/acceptHandshake');
+
 const { decode, encode } = require('../providers/encodeDecode');
 
 module.exports = class WebSocket {
@@ -30,7 +33,7 @@ module.exports = class WebSocket {
    * @param {string} data
    */
   emit(data) {
-    return this.socket.write(encode(data));
+    return this.socket.write(encode(transferable(data)));
   }
 
   /**
